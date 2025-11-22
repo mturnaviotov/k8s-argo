@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: todo
+  namespace: argocd
+spec:
+  project: todo
+  source:
+    repoURL: https://github.com/mturnaviotov/go-k8s-test-app.git
+    targetRevision: HEAD
+    path: charts/
+  destination:
+    server: https://host.docker.internal:26443
+    namespace: todo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: todo
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/mturnaviotov/k8s-go-test-app-argo.git
+      revision: HEAD
+      directories:
+      - path: apps/
+
+  template:
+    metadata:
+      name: todo
+      labels:
+        app_env: "todo"
+
+    spec:
+      project: todo
+      destination:
+        server: https://host.docker.internal:26443
+        namespace: todo
+
+      source:
+        repoURL: https://github.com/mturnaviotov/go-k8s-test-app.git
+        targetRevision: HEAD
+        path: charts/
+        helm:
+          parameters:
+          - name: git.commit
+            value: "{{revision}}"
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
