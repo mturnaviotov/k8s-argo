@@ -15,17 +15,17 @@ backend:
   ingress:
     enabled: true
     className: traefik
-    host: todo-dev-backend.todo-dev.svc.cluster.local
+    host: todo-dev-back.zone.internal
     serviceName: todo-dev-backend
     tls:
     - secretName: todo-dev-backend-tls
       hosts:
-      - todo-dev-backend.todo-dev.svc.cluster.local
+      - todo-dev-back.zone.internal
     annotations:
       kubernetes.io/ingress.className: traefik
       cert-manager.io/cluster-issuer: local-ca
-      external-dns.alpha.kubernetes.io/hostname: todo-dev-backend.todo-dev.svc.cluster.local
-      traefik.ingress.kubernetes.io/router.entrypoints: "web,websecure"
+      external-dns.alpha.kubernetes.io/hostname: todo-dev-back.zone.internal
+      traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
 
   image:
     repository: foxmuldercp/go-todo-backend
@@ -43,23 +43,23 @@ frontend:
     port: 80
 
   backend:
-    host: todo-dev-backend.todo-dev.svc.cluster.local
-    port: 8080
+    host: todo-dev-back.zone.internal
+    port: 443
 
   ingress:
     enabled: true
     className: traefik
-    host: todo-dev-frontend.todo-dev.svc.cluster.local
+    host: todo-dev.zone.internal
     serviceName: todo-dev-frontend
     tls:
     - secretName: todo-dev-frontend-tls
       hosts:
-      - todo-dev-frontend.todo-dev.svc.cluster.local
+      - todo-dev.zone.internal
     annotations:
       kubernetes.io/ingress.className: traefik
       cert-manager.io/cluster-issuer: local-ca
-      external-dns.alpha.kubernetes.io/hostname: todo-dev-frontend.todo-dev.svc.cluster.local
-      traefik.ingress.kubernetes.io/router.entrypoints: "web,websecure"
+      external-dns.alpha.kubernetes.io/hostname: todo-dev.zone.internal
+      traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
       #traefik.ingress.kubernetes.io/router.middlewares: "default-https-redirect@kubernetescrd"
       #traefik.ingress.kubernetes.io/router.tls: "true"
       #traefik.ingress.kubernetes.io/router.priority: "10"
