@@ -6,7 +6,7 @@ metadata:
 spec:
   project: todo
   source:
-    repoURL: https://github.com/mturnaviotov/go-k8s-test-app.git
+    repoURL: https://github.com/mturnaviotov/k8s-test-app.git
     targetRevision: HEAD
     path: charts/
   destination:

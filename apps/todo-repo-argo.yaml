@@ -7,6 +7,6 @@ metadata:
     argocd.argoproj.io/secret-type: repository
 stringData:
   type: git
-  url: https://github.com/mturnaviotov/k8s-go-test-app-argo.git
+  url: https://github.com/mturnaviotov/k8s-argo.git
   name: repo-argo
   project: todo

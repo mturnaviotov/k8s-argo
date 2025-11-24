@@ -26,12 +26,12 @@ spec:
           valueFiles:
           - $values/environments/{{env}}/values.yaml
         path: charts/
-        repoURL: https://github.com/mturnaviotov/go-k8s-test-app
+        repoURL: https://github.com/mturnaviotov/k8s-test-app.git
         targetRevision: main
       - directory: {}
         path: .
         ref: values
-        repoURL: https://github.com/mturnaviotov/k8s-go-test-app-argo
+        repoURL: https://github.com/mturnaviotov/k8s-argo.git
         targetRevision: main
       syncPolicy:
         automated:
