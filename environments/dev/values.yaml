@@ -44,7 +44,7 @@ frontend:
     port: 80
 
   backend:
-    host: todo-dev-backend.todo.svc.cluster.local
+    host: todo-dev-backend.todo-dev.svc.cluster.local
     port: 8080
 
   ingress:
