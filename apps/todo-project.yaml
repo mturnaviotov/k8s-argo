@@ -8,17 +8,21 @@ metadata:
 spec:
   description: Todo
   sourceRepos:
-  - "*"
+  - repo-argo
+  - repo-app
   destinations:
   - namespace: "todo"
-    server: "orbstack"
+    name: "orbstack"
+    server: https://host.docker.internal:26443
   - namespace: "todo-dev"
-    server: "orbstack"
+    name: "orbstack"
+    server: https://host.docker.internal:26443
   - namespace: "todo-prod"
-    server: "orbstack"
-namespaceResourceWhitelist:
-- group: '*'
-  kind: '*'
-clusterResourceWhitelist:
-- group: '*'
-  kind: '*'
+    name: "orbstack"
+    server: https://host.docker.internal:26443
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
