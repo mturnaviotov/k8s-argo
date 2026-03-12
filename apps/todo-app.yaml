@@ -5,7 +5,6 @@ metadata:
   namespace: argocd
   labels:
     app.kubernetes.io/part-of: todo
-    app.kubernetes.io/image: "{{ $values.backend.image.tag }}"
 spec:
   project: todo
   source:
