@@ -6,36 +6,35 @@ metadata:
 
 spec:
   generators:
-  - list:
-      elements:
-      - env: dev
-      - env: prod
+    - list:
+        elements:
+          - env: dev
+          - env: prod
   template:
     metadata:
       name: todo-{{env}}
       labels:
         app.kubernetes.io/part-of: todo-project
-        app.kubernetes.io/env: "{{env}}"
     spec:
       destination:
         namespace: todo-{{env}}
         server: https://host.docker.internal:26443
       project: todo
       sources:
-      - helm:
-          valueFiles:
-          - $values/environments/{{env}}/values.yaml
-        path: charts/
-        repoURL: https://github.com/mturnaviotov/k8s-test-app.git
-        targetRevision: main
-      - directory: {}
-        path: .
-        ref: values
-        repoURL: https://github.com/mturnaviotov/k8s-argo.git
-        targetRevision: main
+        - helm:
+            valueFiles:
+              - $values/environments/{{env}}/values.yaml
+          path: charts/
+          repoURL: https://github.com/mturnaviotov/k8s-test-app.git
+          targetRevision: main
+        - directory: {}
+          path: .
+          ref: values
+          repoURL: https://github.com/mturnaviotov/k8s-argo.git
+          targetRevision: main
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
         syncOptions:
-        - CreateNamespace=true
+          - CreateNamespace=true
