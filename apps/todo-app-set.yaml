@@ -15,7 +15,6 @@ spec:
       name: todo-{{env}}
       labels:
         app.kubernetes.io/part-of: todo-project
-        app.kubernetes.io/image: "{{ .Values.backend.image.tag }}"
     spec:
       destination:
         namespace: todo-{{env}}
