@@ -25,7 +25,7 @@ spec:
       labels:
         app.kubernetes.io/part-of: todo-project
         # При goTemplate: true звернення до змінних йде через крапку
-        tag: "{{index . "backend" "image" "tag"}}"
+        tag: '{{index . "backend" "image" "tag"}}'
     spec:
       project: todo
       sources:
