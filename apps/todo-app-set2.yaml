@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: todo
+  namespace: argocd
+
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/mturnaviotov/k8s-argo.git
+        revision: main
+        files:
+          - path: environments/*/values.yaml
+        jsonnet:
+          tlaCode:
+            env: std.split(std.strReplace(path, 'environments/', ''), '/')[0]
+            tag: std.parseYaml(std.extVar('values'))['backend.image.tag']
+  template:
+    metadata:
+      name: todo-{{env}}
+      labels:
+        app.kubernetes.io/part-of: todo-project
+        tag: {{tag}}
+    spec:
+      destination:
+        namespace: todo-{{env}}
+        server: https://host.docker.internal:26443
+      project: todo
+      sources:
+        - helm:
+            valueFiles:
+              - $values/environments/{{env}}/values.yaml
+          path: charts/
+          repoURL: https://github.com/mturnaviotov/k8s-test-app.git
+          targetRevision: main
+        - directory: {}
+          path: .
+          ref: values
+          repoURL: https://github.com/mturnaviotov/k8s-argo.git
+          targetRevision: main
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
