@@ -7,9 +7,7 @@ spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=zero"]
   generators:
-    - merge:
-        mergeKeys:
-          - env
+    - matrix:
         generators:
           - list:
               elements:
@@ -19,13 +17,14 @@ spec:
               repoURL: https://github.com/mturnaviotov/k8s-argo.git
               revision: main
               files:
-                - path: "environments/*/values.yaml"
+                - path: "environments/{{.env}}/values.yaml"
+              template:
+                builtins:
+                  - name: "env"
               jsonnet: |
-                local parts = std.split(std.extVar('path'), '/');
-                local env = parts[1];
                 local values = std.parseYaml(std.extVar('values'));
                 {
-                  env: env,
+                  env: std.extVar('env'),
                   backendImageTag: values.backend.image.tag
                 }
   template:
