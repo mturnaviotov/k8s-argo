@@ -14,7 +14,7 @@ spec:
         jsonnet:
           tlaCode:
             env: std.split(std.strReplace(path, 'environments/', ''), '/')[0]
-            tag: std.parseYaml(std.extVar('values'))['backend.image.tag']
+            tag: std.parseYaml(std.extVar('values'))['backend']['image']['tag']
   template:
     metadata:
       name: todo-{{env}}
