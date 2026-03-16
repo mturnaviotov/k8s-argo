@@ -21,6 +21,8 @@ spec:
               template:
                 builtins:
                   - name: "env"
+                metadata: {}
+                spec: {}
               jsonnet: |
                 local values = std.parseYaml(std.extVar('values'));
                 {
