@@ -25,7 +25,7 @@ spec:
       name: "todo-{{.env}}"
       labels:
         app.kubernetes.io/part-of: todo-project
-        tag: '{{if .backend}}{{index . "backend" "image" "tag"}}{{else}}latest{{end}}'
+        tag: '{{.backend.image.tag}}'
     spec:
       project: todo
       sources:
