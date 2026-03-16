@@ -10,12 +10,11 @@ spec:
         elements:
           - env: dev
           - env: prod
-  generators:
     - git:
         repoURL: https://github.com/mturnaviotov/k8s-argo.git
         revision: main
         files:
-          - path: environments/*/values.yaml
+          - path: $values/environments/*/values.yaml
         #jsonnet:
         #  tlaCode:
         #    env: std.split(std.strReplace(path, 'environments/', ''), '/')[0]
