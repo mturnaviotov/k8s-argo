@@ -19,13 +19,21 @@ spec:
               repoURL: https://github.com/mturnaviotov/k8s-argo.git
               revision: main
               files:
-                - path: "environments/{{.env}}/values.yaml"
+                - path: "environments/*/values.yaml"
+              jsonnet: |
+                local parts = std.split(std.extVar('path'), '/');
+                local env = parts[1];
+                local values = std.parseYaml(std.extVar('values'));
+                {
+                  env: env,
+                  backendImageTag: values.backend.image.tag
+                }
   template:
     metadata:
       name: "todo-{{.env}}"
       labels:
         app.kubernetes.io/part-of: todo-project
-        tag: '{{ .env.backend.image.tag}}'
+        tag: '{{ .backendImageTag }}'
     spec:
       project: todo
       sources:
