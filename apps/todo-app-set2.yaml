@@ -30,8 +30,11 @@ spec:
                     namespace: "todo-{{.env}}"
               jsonnet: |
                 local values = std.parseYaml(std.extVar('values'));
+                local tag = if std.objectHas(values, 'backend') && std.objectHas(values.backend, 'image') && std.objectHas(values.backend.image, 'tag')
+                  then values.backend.image.tag
+                  else 'unknown';
                 {
-                  backendImageTag: values.backend.image.tag
+                  backendImageTag: tag
                 }
   template:
     metadata:
