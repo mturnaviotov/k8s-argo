@@ -8,7 +8,8 @@ spec:
   goTemplateOptions: ["missingkey=zero"]
   generators:
     - merge:
-        mergeKey: env
+        mergeKeys:
+          - env
         generators:
           - list:
               elements:
@@ -18,30 +19,27 @@ spec:
               repoURL: https://github.com/mturnaviotov/k8s-argo.git
               revision: main
               files:
-                - path: "environments/{{env}}/values.yaml"
+                - path: "environments/{{.env}}/values.yaml"
   template:
     metadata:
       name: "todo-{{.env}}"
       labels:
         app.kubernetes.io/part-of: todo-project
-        # При goTemplate: true звернення до змінних йде через крапку
         tag: '{{index . "backend" "image" "tag"}}'
     spec:
       project: todo
       sources:
-        # Основний чарт
         - repoURL: https://github.com/mturnaviotov/k8s-test-app.git
           targetRevision: main
           path: charts/
           helm:
             valueFiles:
               - $values/environments/{{.env}}/values.yaml
-        # Репозиторій з конфігураціями (для $values)
         - repoURL: https://github.com/mturnaviotov/k8s-argo.git
           targetRevision: main
           ref: values
       destination:
-        server: https://kubernetes.default.svc # Або ваш кастомний хост
+        server: https://kubernetes.default.svc
         namespace: "todo-{{.env}}"
       syncPolicy:
         automated:
