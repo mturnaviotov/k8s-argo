@@ -39,7 +39,7 @@ spec:
           targetRevision: main
           ref: values
       destination:
-        server: https://kubernetes.default.svc
+        server: https://host.docker.internal:26443
         namespace: "todo-{{.env}}"
       syncPolicy:
         automated:
