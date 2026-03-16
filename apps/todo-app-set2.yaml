@@ -6,21 +6,26 @@ metadata:
 
 spec:
   generators:
+    - list:
+        elements:
+          - env: dev
+          - env: prod
+  generators:
     - git:
         repoURL: https://github.com/mturnaviotov/k8s-argo.git
         revision: main
         files:
           - path: environments/*/values.yaml
-        jsonnet:
-          tlaCode:
-            env: std.split(std.strReplace(path, 'environments/', ''), '/')[0]
-            tag: std.parseYaml(std.extVar('values'))['backend']['image']['tag']
+        #jsonnet:
+        #  tlaCode:
+        #    env: std.split(std.strReplace(path, 'environments/', ''), '/')[0]
+        #    tag: std.parseYaml(std.extVar('values'))['backend']['image']['tag']
   template:
     metadata:
       name: todo-{{env}}
       labels:
         app.kubernetes.io/part-of: todo-project
-        tag: {{tag}}
+        tag: {{.backend.image.tag}}
     spec:
       destination:
         namespace: todo-{{env}}
