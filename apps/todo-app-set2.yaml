@@ -3,7 +3,6 @@ kind: ApplicationSet
 metadata:
   name: todo
   namespace: argocd
-
 spec:
   generators:
     - list:
@@ -14,7 +13,7 @@ spec:
         repoURL: https://github.com/mturnaviotov/k8s-argo.git
         revision: main
         files:
-          - path: environments/{{env}}/values.yaml
+          - path: $values/environments/{{env}}/values.yaml
         #jsonnet:
         #  tlaCode:
         #    env: std.split(std.strReplace(path, 'environments/', ''), '/')[0]
@@ -24,7 +23,7 @@ spec:
       name: todo-{{env}}
       labels:
         app.kubernetes.io/part-of: todo-project
-        tag: {{backend.image.tag}}
+        app.kubernetes.io/tag: "{{backend.image.tag}}"
     spec:
       destination:
         namespace: todo-{{env}}
