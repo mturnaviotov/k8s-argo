@@ -13,7 +13,7 @@ spec:
         repoURL: https://github.com/mturnaviotov/k8s-argo.git
         revision: main
         files:
-          - path: $values/environments/{{env}}/values.yaml
+          - path: /environments/{{env}}/values.yaml
         #jsonnet:
         #  tlaCode:
         #    env: std.split(std.strReplace(path, 'environments/', ''), '/')[0]
@@ -23,7 +23,7 @@ spec:
       name: todo-{{env}}
       labels:
         app.kubernetes.io/part-of: todo-project
-        app.kubernetes.io/tag: "{{backend.image.tag}}"
+        tag: "{{backend.image.tag}}"
     spec:
       destination:
         namespace: todo-{{env}}
@@ -32,12 +32,12 @@ spec:
       sources:
         - helm:
             valueFiles:
-              - $values/environments/{{env}}/values.yaml
+              - $values/{{env}}/values.yaml
           path: charts/
           repoURL: https://github.com/mturnaviotov/k8s-test-app.git
           targetRevision: main
         - directory: {}
-          path: .
+          path: /environments/
           ref: values
           repoURL: https://github.com/mturnaviotov/k8s-argo.git
           targetRevision: main
