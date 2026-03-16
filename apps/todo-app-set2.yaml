@@ -3,48 +3,46 @@ kind: ApplicationSet
 metadata:
   name: todo
   namespace: argocd
-
 spec:
   goTemplate: true
-  GoTemplateOptions:
-    missingkey: zero
+  goTemplateOptions: ["missingkey=zero"]
   generators:
-    merge:
-      mergeKey: env
-      generators:
-        - list:
-            elements:
-              - env: dev
-              - env: prod
-        - git:
-            repoURL:
+    - merge:
+        mergeKey: env
+        generators:
+          - list:
+              elements:
+                - env: dev
+                - env: prod
+          - git:
               repoURL: https://github.com/mturnaviotov/k8s-argo.git
               revision: main
               files:
-                - path: environments/{{env}}/values.yaml
+                - path: "environments/{{env}}/values.yaml"
   template:
     metadata:
-      name: todo-{{env}}
+      name: "todo-{{.env}}"
       labels:
         app.kubernetes.io/part-of: todo-project
-        tag: "{{.backend.image.tag}}"
+        # При goTemplate: true звернення до змінних йде через крапку
+        tag: "{{index . "backend" "image" "tag"}}"
     spec:
-      destination:
-        namespace: todo-{{env}}
-        server: https://host.docker.internal:26443
       project: todo
       sources:
-        - helm:
-            valueFiles:
-              - $values/environments/{{env}}/values.yaml
+        # Основний чарт
+        - repoURL: https://github.com/mturnaviotov/k8s-test-app.git
+          targetRevision: main
           path: charts/
-          repoURL: https://github.com/mturnaviotov/k8s-test-app.git
+          helm:
+            valueFiles:
+              - $values/environments/{{.env}}/values.yaml
+        # Репозиторій з конфігураціями (для $values)
+        - repoURL: https://github.com/mturnaviotov/k8s-argo.git
           targetRevision: main
-        - directory: {}
-          path: .
           ref: values
-          repoURL: https://github.com/mturnaviotov/k8s-argo.git
-          targetRevision: main
+      destination:
+        server: https://kubernetes.default.svc # Або ваш кастомний хост
+        namespace: "todo-{{.env}}"
       syncPolicy:
         automated:
           prune: true
