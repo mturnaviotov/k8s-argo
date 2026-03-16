@@ -3,27 +3,31 @@ kind: ApplicationSet
 metadata:
   name: todo
   namespace: argocd
+
 spec:
+  goTemplate: true
+  GoTemplateOptions:
+    missingkey: zero
   generators:
-    - list:
-        elements:
-          - env: dev
-          - env: prod
-    - git:
-        repoURL: https://github.com/mturnaviotov/k8s-argo.git
-        revision: main
-        files:
-          - path: /environments/{{env}}/values.yaml
-        #jsonnet:
-        #  tlaCode:
-        #    env: std.split(std.strReplace(path, 'environments/', ''), '/')[0]
-        #    tag: std.parseYaml(std.extVar('values'))['backend']['image']['tag']
+    merge:
+      mergeKey: env
+      generators:
+        - list:
+            elements:
+              - env: dev
+              - env: prod
+        - git:
+            repoURL:
+              repoURL: https://github.com/mturnaviotov/k8s-argo.git
+              revision: main
+              files:
+                - path: environments/{{env}}/values.yaml
   template:
     metadata:
       name: todo-{{env}}
       labels:
         app.kubernetes.io/part-of: todo-project
-        tag: "{{backend.image.tag}}"
+        tag: "{{.backend.image.tag}}"
     spec:
       destination:
         namespace: todo-{{env}}
@@ -32,12 +36,12 @@ spec:
       sources:
         - helm:
             valueFiles:
-              - $values/{{env}}/values.yaml
+              - $values/environments/{{env}}/values.yaml
           path: charts/
           repoURL: https://github.com/mturnaviotov/k8s-test-app.git
           targetRevision: main
         - directory: {}
-          path: /environments/
+          path: .
           ref: values
           repoURL: https://github.com/mturnaviotov/k8s-argo.git
           targetRevision: main
