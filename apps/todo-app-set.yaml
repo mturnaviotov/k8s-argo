@@ -1,40 +1,48 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: ApplicationSet
-# metadata:
-#   name: todo
-#   namespace: argocd
-
-# spec:
-#   generators:
-#     - list:
-#         elements:
-#           - env: dev
-#           - env: prod
-#   template:
-#     metadata:
-#       name: todo-{{env}}
-#       labels:
-#         app.kubernetes.io/part-of: todo-project
-#     spec:
-#       destination:
-#         namespace: todo-{{env}}
-#         server: https://host.docker.internal:26443
-#       project: todo
-#       sources:
-#         - helm:
-#             valueFiles:
-#               - $values/environments/{{env}}/values.yaml
-#           path: charts/
-#           repoURL: https://github.com/mturnaviotov/k8s-test-app.git
-#           targetRevision: main
-#         - directory: {}
-#           path: .
-#           ref: values
-#           repoURL: https://github.com/mturnaviotov/k8s-argo.git
-#           targetRevision: main
-#       syncPolicy:
-#         automated:
-#           prune: true
-#           selfHeal: true
-#         syncOptions:
-#           - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: todo
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=zero"]
+  generators:
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - env: dev
+                - env: prod
+          - git:
+              repoURL: https://github.com/mturnaviotov/k8s-argo.git
+              revision: main
+              pathParamPrefix: val
+              files:
+                - path: "environments/{{.env}}/values.yaml"
+  template:
+    metadata:
+      name: "todo-{{.env}}"
+      labels:
+        app.kubernetes.io/part-of: todo-project
+        tag: "{{.backend.image.tag}}"
+    spec:
+      project: todo
+      sources:
+        - repoURL: https://github.com/mturnaviotov/k8s-test-app.git
+          targetRevision: main
+          path: charts/
+          helm:
+            valueFiles:
+              - $values/environments/{{.env}}/values.yaml
+        - repoURL: https://github.com/mturnaviotov/k8s-argo.git
+          targetRevision: main
+          ref: values
+      destination:
+        server: https://host.docker.internal:26443
+        namespace: "todo-{{.env}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
