@@ -16,32 +16,15 @@ spec:
           - git:
               repoURL: https://github.com/mturnaviotov/k8s-argo.git
               revision: main
+              pathParamPrefix: val
               files:
                 - path: "environments/{{.env}}/values.yaml"
-              template:
-                builtins:
-                  - name: "env"
-                metadata:
-                  name: "todo-{{.env}}"
-                spec:
-                  project: todo
-                  destination:
-                    server: https://host.docker.internal:26443
-                    namespace: "todo-{{.env}}"
-              jsonnet: |
-                local values = std.parseYaml(std.extVar('values'));
-                local tag = if std.objectHas(values, 'backend') && std.objectHas(values.backend, 'image') && std.objectHas(values.backend.image, 'tag')
-                  then values.backend.image.tag
-                  else 'unknown';
-                {
-                  backendImageTag: tag
-                }
   template:
     metadata:
       name: "todo-{{.env}}"
       labels:
         app.kubernetes.io/part-of: todo-project
-        tag: '{{ .backendImageTag }}'
+        tag: "{{.backend.image.tag}}"
     spec:
       project: todo
       sources:
