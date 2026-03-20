@@ -37,7 +37,7 @@ spec:
           targetRevision: main
           ref: values
       destination:
-        server: "in-cluster"
+        server: https://kubernetes.default.svc
         namespace: "todo-{{.env}}"
       syncPolicy:
         automated:
