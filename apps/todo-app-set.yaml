@@ -23,7 +23,6 @@ spec:
     metadata:
       name: "todo-{{.env}}"
       labels:
-        app.kubernetes.io/part-of: todo-project
         tag: "{{.backend.image.tag}}"
     spec:
       project: todo

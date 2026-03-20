@@ -4,25 +4,25 @@ metadata:
   name: todo
   namespace: argocd
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
 spec:
   description: Todo
   sourceRepos:
-  - repo-argo
-  - repo-app
+    - repo-argo
+    - repo-app
   destinations:
-  - namespace: "todo"
-    name: "orbstack"
-    server: https://host.docker.internal:26443
-  - namespace: "todo-dev"
-    name: "orbstack"
-    server: https://host.docker.internal:26443
-  - namespace: "todo-prod"
-    name: "orbstack"
-    server: https://host.docker.internal:26443
+    - namespace: "todo"
+      name: "in-cluster"
+      server: https://kubernetes.default.svc
+    - namespace: "todo-dev"
+      name: "in-cluster"
+      server: https://kubernetes.default.svc
+    - namespace: "todo-prod"
+      name: "in-cluster"
+      server: https://kubernetes.default.svc
   namespaceResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: "*"
+      kind: "*"
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: "*"
+      kind: "*"

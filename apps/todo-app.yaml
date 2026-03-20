@@ -3,8 +3,6 @@ kind: Application
 metadata:
   name: todo
   namespace: argocd
-  labels:
-    app.kubernetes.io/part-of: todo
 spec:
   project: todo
   source:
@@ -12,7 +10,7 @@ spec:
     targetRevision: HEAD
     path: charts/
   destination:
-    server: https://host.docker.internal:26443
+    server: https://kubernetes.default.svc
     namespace: todo
   syncPolicy:
     automated:
