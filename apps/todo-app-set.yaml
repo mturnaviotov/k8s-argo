@@ -37,7 +37,7 @@ spec:
           targetRevision: main
           ref: values
       destination:
-        server: https://host.docker.internal:26443
+        server: "in-cluster"
         namespace: "todo-{{.env}}"
       syncPolicy:
         automated:
