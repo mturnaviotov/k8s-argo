@@ -6,11 +6,17 @@ backend:
     port: 8080
     listenPort: 8080
 
-  persistence:
+  postgresql:
     enabled: true
-    size: 256M
-    storageClass: "" #"local-path"
-    accessMode: ReadWriteOnce
+    auth:
+      postgresPassword: "changeme"
+      username: "todoapp"
+      password: "todoapp"
+      database: "todoapp"
+    primary:
+      persistence:
+        enabled: true
+        size: 64Mi
 
   ingress:
     enabled: true
@@ -18,9 +24,9 @@ backend:
     host: todo-prod-backend.zone.internal
     serviceName: todo-prod-backend
     tls:
-    - secretName: todo-backend-tls
-      hosts:
-      - todo-prod-backend.zone.internal
+      - secretName: todo-backend-tls
+        hosts:
+          - todo-prod-backend.zone.internal
     annotations:
       kubernetes.io/ingress.className: traefik
       cert-manager.io/cluster-issuer: local-ca
@@ -29,7 +35,7 @@ backend:
 
   image:
     repository: foxmuldercp/go-todo-backend
-    tag: 5bde17c
+    tag: 4fcec92
 
   resources:
     requests:
@@ -53,9 +59,9 @@ frontend:
     host: todo-prod.zone.internal
     serviceName: todo-prod-frontend
     tls:
-    - secretName: todo-prod-frontend-tls
-      hosts:
-      - todo-prod.zone.internal
+      - secretName: todo-prod-frontend-tls
+        hosts:
+          - todo-prod.zone.internal
     annotations:
       kubernetes.io/ingress.className: traefik
       cert-manager.io/cluster-issuer: local-ca
